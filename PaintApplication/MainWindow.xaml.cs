@@ -33,6 +33,9 @@ namespace PaintApplication
         public MainWindow()
         {
             InitializeComponent();
+            GlobalState.ChangeColor += ChangeColorSample;
+            GlobalState.Color = Brushes.Black;
+            GlobalState.StrokeSize = 1;
         }
 
         private void LineButton_Click(object sender, RoutedEventArgs e)
@@ -64,6 +67,11 @@ namespace PaintApplication
             }
         }
 
+        private void Brush_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             switch (_currentShape)
@@ -86,9 +94,9 @@ namespace PaintApplication
         {
             Rectangle rectangle = new Rectangle
             {
-                Stroke = Brushes.Orange,
-                Fill = Brushes.AntiqueWhite,
-                StrokeThickness = 4
+                Stroke = GlobalState.Color,
+                Fill = Brushes.White,
+                StrokeThickness = GlobalState.StrokeSize
             };
 
             if (_end.Y == 0 && _end.X == 0)
@@ -126,9 +134,9 @@ namespace PaintApplication
         {
             Ellipse ellipse = new Ellipse
             {
-                Stroke = Brushes.Green,
-                Fill = Brushes.AntiqueWhite,
-                StrokeThickness = 4,
+                Stroke = GlobalState.Color,
+                Fill = Brushes.White,
+                StrokeThickness = GlobalState.StrokeSize,
                 Height = 10,
                 Width = 10
             };
@@ -160,13 +168,42 @@ namespace PaintApplication
         {
             Line line = new Line
             {
-                Stroke = Brushes.Green,
+                Stroke = GlobalState.Color,
                 X1 = _start.X,
                 X2 = _end.X,
                 Y1 = _start.Y - 50,
-                Y2 = _end.Y - 50
+                Y2 = _end.Y - 50,
+                StrokeThickness = GlobalState.StrokeSize
             };
             Canvas.Children.Add(line);
+        }
+
+        private void ChangeColorSample(object sender, EventArgs e)
+        {
+            Sample.Fill = GlobalState.Color;
+        }
+
+        private void ChangeBrushColor(object sender, RoutedEventArgs e)
+        {
+            GlobalState.Color = (sender as RadioButton).Background;
+        }
+
+        private void SelectThickNess_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (SelectThickNess.SelectedIndex)
+            {
+                case 0:
+                    GlobalState.StrokeSize = 1;
+                    break;
+                case 1:
+                    GlobalState.StrokeSize = 2;
+                    break;
+                case 2:
+                    GlobalState.StrokeSize = 3;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
