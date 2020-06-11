@@ -22,7 +22,7 @@ namespace PaintApplication
     {
         private enum Shape
         {
-            Line, Ellipse, Rectangle
+            Line, Ellipse, Rectangle, Brush
         }
 
         private Point _start;
@@ -55,7 +55,6 @@ namespace PaintApplication
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Lấy tọa độ X, Y lần click đầu tiên
             _start = e.GetPosition(this);
         }
 
@@ -64,12 +63,17 @@ namespace PaintApplication
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 _end = e.GetPosition(this);
+
+                if (_currentShape == Shape.Brush)
+                {
+                    DrawBrush(e);
+                }
             }
         }
 
         private void Brush_Selected(object sender, RoutedEventArgs e)
         {
-
+            _currentShape = Shape.Brush;
         }
 
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
@@ -88,6 +92,21 @@ namespace PaintApplication
                 default:
                     break;
             }
+        }
+
+        private void DrawBrush(MouseEventArgs e)
+        {
+            Line line = new Line();
+            line.Stroke = GlobalState.Color;
+            line.StrokeThickness = GlobalState.StrokeSize;
+            line.X1 = _start.X;
+            line.Y1 = _start.Y - Constants.HeaderHeight;
+            line.X2 = _end.X;
+            line.Y2 = _end.Y - Constants.HeaderHeight;
+
+            _start = e.GetPosition(this);
+
+            Canvas.Children.Add(line);
         }
 
         private void DrawRectangle()
@@ -118,12 +137,12 @@ namespace PaintApplication
 
             if (_end.Y >= _start.Y)
             {
-                rectangle.SetValue(Canvas.TopProperty, _start.Y - 50);
+                rectangle.SetValue(Canvas.TopProperty, _start.Y - Constants.HeaderHeight);
                 rectangle.Height = _end.Y - _start.Y;
             }
             else
             {
-                rectangle.SetValue(Canvas.TopProperty, _end.Y - 50);
+                rectangle.SetValue(Canvas.TopProperty, _end.Y - Constants.HeaderHeight);
                 rectangle.Height = _start.Y - _end.Y;
             }
 
@@ -153,12 +172,12 @@ namespace PaintApplication
 
             if (_end.Y >= _start.Y)
             {
-                ellipse.SetValue(Canvas.TopProperty, _start.Y - 50);
+                ellipse.SetValue(Canvas.TopProperty, _start.Y - Constants.HeaderHeight);
                 ellipse.Height = _end.Y - _start.Y;
             }
             else
             {
-                ellipse.SetValue(Canvas.TopProperty, _end.Y - 50);
+                ellipse.SetValue(Canvas.TopProperty, _end.Y - Constants.HeaderHeight);
                 ellipse.Height = _start.Y - _end.Y;
             }
             Canvas.Children.Add(ellipse);
@@ -171,8 +190,8 @@ namespace PaintApplication
                 Stroke = GlobalState.Color,
                 X1 = _start.X,
                 X2 = _end.X,
-                Y1 = _start.Y - 50,
-                Y2 = _end.Y - 50,
+                Y1 = _start.Y - Constants.HeaderHeight,
+                Y2 = _end.Y - Constants.HeaderHeight,
                 StrokeThickness = GlobalState.StrokeSize
             };
             Canvas.Children.Add(line);

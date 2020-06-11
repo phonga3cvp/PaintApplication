@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Constants.cs" />
     <Compile Include="GlobalState.cs" />
     <Compile Include="Tools\Palette.cs" />
     <Page Include="MainWindow.xaml">
